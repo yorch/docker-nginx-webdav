@@ -1,11 +1,73 @@
-version: '2'
+version: "3.7"
+
 services:
-  webdav:
-    build: .
+  traefik:
+    image: traefik:2.2
+    container_name: traefik2
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - "/mnt:/media"
-    environment:
-      USERNAME: user
-      PASSWORD: passwd
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/traefik:/opt/traefik
+      - ./logs/traefik:/opt/logs
+    command:
+      # Dashboard
+      - "--api" # Enables the web UI
+      - "--global.sendanonymoususage=false"
+      # Entrypoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web-secured.address=:443"
+      # Let's Encrypt
+      - "--certificatesResolvers.webcert.acme.email=${ACME_EMAIL?Variable ACME_EMAIL not set}"
+      - "--certificatesResolvers.webcert.acme.tlschallenge=true"
+      - "--certificatesResolvers.webcert.acme.storage=/opt/traefik/acme.json"
+      # Docker Provider
+      - "--providers.docker" # Tells Traefik to listen to docker
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.watch"
+      # Logging
+      - "--accesslog"
+      - "--log"
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-INFO}"
+    labels:
+      - "traefik.enable=true"
+      # Global Middlewares
+      - "traefik.http.middlewares.global-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.global-auth.basicauth.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}"
+      # HTTP Host
+      - "traefik.http.routers.traefik-api.rule=Host(`traefik.${DOMAIN?Variable DOMAIN not set}`)"
+      - "traefik.http.routers.traefik-api.entrypoints=web"
+      - "traefik.http.routers.traefik-api.service=api@internal"
+      # Redirects to HTTPS
+      - "traefik.http.routers.traefik-api.middlewares=global-redirectscheme"
+      # HTTPS Host
+      - "traefik.http.routers.traefik-api-secured.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik-api-secured.entrypoints=web-secured"
+      - "traefik.http.routers.traefik-api-secured.tls=true"
+      - "traefik.http.routers.traefik-api-secured.tls.certResolver=webcert"
+      - "traefik.http.routers.traefik-api-secured.service=api@internal"
+      # Auth
+      - "traefik.http.routers.traefik-api-secured.middlewares=global-auth"
+
+  webdav:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./data/webdav:/media
+    env_file: .env
+    labels:
+      - "traefik.enable=true"
+      # HTTP Host
+      - "traefik.http.routers.webdav.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.webdav.entrypoints=web"
+      # Redirects to HTTPS
+      - "traefik.http.routers.webdav.middlewares=global-redirectscheme"
+      # HTTPS Host
+      - "traefik.http.routers.webdav-secured.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.webdav-secured.entrypoints=web-secured"
+      - "traefik.http.routers.webdav-secured.tls=true"
+      - "traefik.http.routers.webdav-secured.tls.certResolver=webcert"
+      - "traefik.http.routers.webdav-secured.service=webdav-secured"
