@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 LABEL maintainer="jorge.barnaby@gmail.com"
 
 RUN apt-get update \
-    && apt-get install -qqy \
+    && apt-get install -qqy --no-install-recommends \
     nginx \
     nginx-extras \
     apache2-utils \
