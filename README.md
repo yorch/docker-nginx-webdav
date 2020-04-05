@@ -1,29 +1,34 @@
-# Supported tags and respective `Dockerfile` links
+# Nginx WebDav Docker Image
 
--	[`latest` (*Dockerfile*)](https://github.com/sashgorokhov/docker-nginx-webdav/blob/master/Dockerfile)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/yorch/nginx-webdav)](https://hub.docker.com/r/yorch/nginx-webdav)
+[![](https://images.microbadger.com/badges/image/yorch/nginx-webdav.svg)](https://microbadger.com/images/yorch/nginx-webdav)
+[![](https://images.microbadger.com/badges/version/yorch/nginx-webdav.svg)](https://microbadger.com/images/yorch/nginx-webdav)
 
-[![](https://badge.imagelayers.io/sashgorokhov/webdav:latest.svg)](https://imagelayers.io/?images=sashgorokhov/webdav:latest 'Get your own badge on imagelayers.io')
-
-# How to use this image
+## How to use this image
 
 ```console
-$ docker run --name webdav -p 80:80 -v /media:/media -d sashgorokhov/webdav
+$ docker run --name webdav -p 80:80 -v /media:/media -d yorch/nginx-webdav
 ```
-This will start a webdav server listening on the default port of 80.
-Then access it via `http://localhost:80` or `http://host:80` in a browser.
 
-This server will serve files located in your /media folder
+This will start a webdav server listening on port `80`.
+Then access it via `http://localhost` or `http://host` in a browser.
+
+This server will serve files located in your `/media` folder
 
 Image's supported volumes:
+
 - `/media` - served directory
 
 To restrict access to only authorized users, you can define two environment variables: `USERNAME` and `PASSWORD`
+
 ```console
-$ docker run --name webdav -p 80:80 -v /media:/media -e USERNAME=webdav -e PASSWORD=webdav -d sashgorokhov/webdav
+$ docker run --name webdav -p 80:80 -v /media:/media -e USERNAME=webdav -e PASSWORD=webdav -d yorch/nginx-webdav
 ```
 
-# Supported Docker versions
+## License
 
-This image is officially supported on Docker version 1.10.2.
-Support for older versions (down to 1.6) is provided on a best-effort basis.
-Please see [the Docker installation documentation](https://docs.docker.com/installation/) for details on how to upgrade your Docker daemon.
+MIT License
+
+Copyright (c) 2020 Jorge Barnaby
+
+See [LICENSE](LICENSE)
