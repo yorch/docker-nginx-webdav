@@ -1,4 +1,4 @@
-# Nginx WebDav Docker Image
+# Nginx WebDAV Docker Image
 
 [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/yorch/nginx-webdav)](https://hub.docker.com/r/yorch/nginx-webdav)
 [![](https://images.microbadger.com/badges/image/yorch/nginx-webdav.svg)](https://microbadger.com/images/yorch/nginx-webdav)

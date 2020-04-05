@@ -6,8 +6,8 @@ ARG VERSION
 LABEL \
     maintainer="jorge.barnaby@gmail.com" \
     org.label-schema.build-date=$BUILD_DATE \
-    org.label-schema.name="Nginx WebDav server" \
-    org.label-schema.description="WebDav server based on Nginx and Alpine Linux" \
+    org.label-schema.name="Nginx WebDAV server" \
+    org.label-schema.description="WebDAV server based on Nginx and Alpine Linux" \
     org.label-schema.url="https://github.com/yorch" \
     org.label-schema.vcs-ref=$VCS_REF \
     org.label-schema.vcs-url="https://github.com/yorch/docker-nginx-webdav" \
