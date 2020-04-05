@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 HTPASSWD_FILE=/etc/nginx/htpasswd
 
@@ -12,6 +12,6 @@ then
 	echo Hashed given password and created htpasswd file.
 else
 	echo Using no auth.
-	sed -i 's%auth_basic "Restricted";% %g'       /etc/nginx/conf.d/default.conf
-	sed -i 's%auth_basic_user_file htpasswd;% %g' /etc/nginx/conf.d/default.conf
+	sed -i 's%auth_basic           "Restricted";% %g'        /etc/nginx/conf.d/default.conf
+	sed -i 's%auth_basic_user_file /etc/nginx/htpasswd;% %g' /etc/nginx/conf.d/default.conf
 fi

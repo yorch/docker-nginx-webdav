@@ -1,20 +1,16 @@
-FROM ubuntu:18.04
+FROM alpine:edge
 LABEL maintainer="jorge.barnaby@gmail.com"
 
-RUN apt-get update \
-    && apt-get install -qqy --no-install-recommends \
+RUN apk add --no-cache \
     nginx \
-    nginx-extras \
-    apache2-utils \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    nginx-mod-http-dav-ext \
+    apache2-utils
 
 COPY docker/webdav.conf     /etc/nginx/conf.d/default.conf
-
-COPY docker/entrypoint.sh   /
+COPY docker/entrypoint.sh   /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh \
-    && rm /etc/nginx/sites-enabled/*
+    && mkdir /run/nginx
 
 VOLUME /media
 
